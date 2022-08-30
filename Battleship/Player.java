@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +12,7 @@ public class Player {
     private Board _shot_board;
     private List<Ship> _ships;
     private List<int[]> _shots;
+    private Helper _helper;
 
     // Default constructor
     public Player() {
@@ -29,24 +33,66 @@ public class Player {
 
         // Place each ship in the list on the board
         for (Ship ship : this._ships) {
-            this._ship_board.placeShip(ship, ship.getPosition());
+            this._ship_board.placeShip(ship, ship.getPosition(), ship.getOrientation());
         }
 
         // Instantiate the shots list
         this._shots = new ArrayList<int[]>();
+
+        // Instantiate the helper object
+        this._helper = new Helper();
     }
 
-    // tmp
-    public void printBoard() {
-        this._ship_board.printBoard();
+    // Method that will setup the player's board at the start of the game
+    public void setupBoard() throws Exception {
+        String menuInput;
+        Ship currShip = new Ship();
+        boolean validShip;
+        int[] position;
+        Direction orientation;
+
+        // User input buffered reader
+        BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
+
+        System.out.println("BOARD SETUP");
+        while (true) {
+            // Reset the boolean
+            validShip = false;
+
+            // Print options
+            this._ship_board.printBoard();
+            System.out.println("Please select an option:\nR - Ready Up\n1 - Move Ship 1\n2 - Move Ship 2\n3 - Move Ship 3\n4 - Move Ship 4");
+            menuInput = userInput.readLine();
+
+            // Check menuInput for ready up
+            if (menuInput.toLowerCase().equals("r")) {
+                break;
+            }
+            // Otherwise, check menuInput for ship index
+            else {
+                try {
+                    currShip = this._ships.get(this._helper.inputToShip(menuInput));
+                    validShip = true;
+                }
+                catch (Exception e) {
+                    System.out.println("\nCommand not recognized\n\n");
+                }
+            }
+
+            // If ship is valid, continue to position and orientation
+            if (validShip) {
+                System.out.println("\nEnter the position:");
+                position = this._helper.inputToPosition(userInput.readLine());
+                System.out.println("\nEnter the orientation:");
+                orientation = this._helper.inputToOrientation(userInput.readLine());
+
+                // Place the ship on the board
+                this._ship_board.placeShip(currShip, position, orientation);
+            }
+        }
     }
 
     /*
-    // Method that will setup the player's board at the start of the game
-    public void setupBoard() {
-        //
-    }
-
     // Method that validates the player's input and sends the message to the server
     public String inputShot() {
         //
