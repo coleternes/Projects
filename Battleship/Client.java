@@ -4,15 +4,10 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 
 public class Client {
-    //private Player _player;
-
-    public static void main(String[] argv) {
-        /*
-        this._player = new Player();
-        this._player.PrintBoard();
-        */
-
+    public static void main(String[] argv) throws Exception {
+        // Instantiate the player object
         Player p = new Player();
-        p.printBoard();
+
+        p.setupBoard();
     }
 }
