@@ -88,7 +88,7 @@ public class Board {
     }
 
     // Method to place the ship on the board
-    public void placeShip(Ship ship, int[] newPosition, Direction newOrientation) {
+    public boolean placeShip(Ship ship, int[] newPosition, Direction newOrientation, boolean feedback) {
         // Track positions if an error is to occur
         int[] oldPosition = ship.getPosition();
         Direction oldOrientation = ship.getOrientation();
@@ -108,27 +108,31 @@ public class Board {
 
         // Attempt to place the ship with the given position and orientation
         try {
-            // Iterate through each position of the ship
+            // Iterate through each ship component
             for (int i = 0; i < ship.getLength(); ++i) {
+                // Determine the current delta position of the ship component
                 int[] deltaPos = this.deltaPos(ship, i);
 
-                // Check if a ship is already placed at deltaPos
-                if (this._board[deltaPos[0]][deltaPos[1]] == 'S') {
-                    throw new CollisionException("CollisionException", "Collision detected");
+                // Place the ship component at deltaPos
+                if (this._board[deltaPos[0]][deltaPos[1]] == '~') {
+                    this._board[deltaPos[0]][deltaPos[1]] = Character.forDigit(ship.getNumber(), 10);
+                    newPosStack.push(deltaPos);
                 }
-
-                // Place the ship
-                this._board[deltaPos[0]][deltaPos[1]] = 'S';
-                newPosStack.push(deltaPos);
+                // Otherwise, there is already a ship at deltaPos
+                else
+                    throw new CollisionException("CollisionException", "Collision detected");
             }
+
+            // Successfully placed the ship
+            return true;
         }
         // Catch placement errors if they should occur
         catch (Exception e) {
-            if (e instanceof ArrayIndexOutOfBoundsException)
+            if (e instanceof ArrayIndexOutOfBoundsException && feedback)
                 System.out.println("\nShip out of bounds; reverting position\n\n");
-            else if (e instanceof CollisionException)
+            else if (e instanceof CollisionException && feedback)
                 System.out.println("\nShip collides with other ship, reverting position\n\n");
-            else
+            else if (feedback)
                 System.out.println("\nUnkown error, reverting position\n\n");
 
             // Revert the position and orientation
@@ -144,27 +148,30 @@ public class Board {
             // Place back the old positions
             while (!oldPosStack.empty()) {
                 int[] tmpPos = oldPosStack.pop();
-                this._board[tmpPos[0]][tmpPos[1]] = 'S';
+                this._board[tmpPos[0]][tmpPos[1]] = Character.forDigit(ship.getNumber(), 10);
             }
+
+            // Failed to place the ship
+            return false;
         }
     }
 
     // Method to place a shot on the board
-    public void placeShot(int[] position) {
+    public boolean placeShot(int[] position) {
         try {
-            switch (this._board[position[0]][position[1]]) {
-                case '~':
-                    this._board[position[0]][position[1]] = 'M'; // Miss
-                    break;
-                case 'S':
-                    this._board[position[0]][position[1]] = 'H'; // Hit
-                    break;
-                default:
-                    System.out.println("Position hit previously");
-            }
+            // Missed shot
+            if (this._board[position[0]][position[1]] == '~')
+                this._board[position[0]][position[1]] = 'O';
+            // Hit shot
+            else
+                this._board[position[0]][position[1]] = 'X';
+
+            return true;
         }
         catch (ArrayIndexOutOfBoundsException e) {
             System.out.println("Shot out of bounds");
+
+            return false;
         }
     }
 }

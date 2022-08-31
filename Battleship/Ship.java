@@ -3,19 +3,22 @@ public class Ship {
     private int _length;
     private int[] _position;
     private Direction _orientation;
+    private int _number;
 
     // Default constructor
     public Ship() {
         this.setLength(-1);
         this.setPosition(new int[] {-1, -1});
         this.setOrientation(Direction.EMPTY);
+        this.setNumber(-1);
     }
 
     // Overloaded constructor
-    public Ship(int length, Direction orientation, int[] position) {
+    public Ship(int length, Direction orientation, int[] position, int number) {
         this.setLength(length);
         this.setPosition(position);
         this.setOrientation(orientation);
+        this.setNumber(number);
     }
 
     // Length mutator and accessor
@@ -40,5 +43,13 @@ public class Ship {
     }
     public void setOrientation(Direction orientation) {
         this._orientation = orientation;
+    }
+
+    // Number mutator and accessor
+    public int getNumber() {
+        return this._number;
+    }
+    public void setNumber(int number) {
+        this._number = number;
     }
 }

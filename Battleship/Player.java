@@ -3,6 +3,7 @@ import java.io.InputStreamReader;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Player {
     // Member variables
@@ -24,17 +25,17 @@ public class Player {
         this._ship_board = new Board(10);
         this._shot_board = new Board(10);
 
-        // Instantiate 4 ships at default positions
+        // Instantiate 4 ships at random positions
         this._ships = new ArrayList<Ship>();
-        this._ships.add(new Ship(2, Direction.SOUTH, new int[] {0, 0}));
-        this._ships.add(new Ship(2, Direction.SOUTH, new int[] {0, 1}));
-        this._ships.add(new Ship(3, Direction.SOUTH, new int[] {0, 2}));
-        this._ships.add(new Ship(4, Direction.SOUTH, new int[] {0, 3}));
-
-        // Place each ship in the list on the board
+        this._ships.add(new Ship(2, Direction.SOUTH, new int[] {0, 0}, 1));
+        this._ships.add(new Ship(2, Direction.SOUTH, new int[] {0, 1}, 2));
+        this._ships.add(new Ship(3, Direction.SOUTH, new int[] {0, 2}, 3));
+        this._ships.add(new Ship(4, Direction.SOUTH, new int[] {0, 3}, 4));
+        // Temporarily place the ships
         for (Ship ship : this._ships) {
-            this._ship_board.placeShip(ship, ship.getPosition(), ship.getOrientation());
+            this._ship_board.placeShip(ship, ship.getPosition(), ship.getOrientation(), false);
         }
+        this.randomizeBoard();
 
         // Instantiate the shots list
         this._shots = new ArrayList<int[]>();
@@ -43,7 +44,39 @@ public class Player {
         this._helper = new Helper();
     }
 
-    // Method that will setup the player's board at the start of the game
+    // Method that randomizes the ship's positions
+    public void randomizeBoard() {
+        // Place each ship in the list on the board
+        for (Ship ship : this._ships) {
+            // Continue to randomize the ships position and orientation
+            // until the ship can be placed
+            while (true) {
+                Random rand = new Random();
+                int[] randomPosition = new int[2];
+                Direction randomOrientation;
+
+                // Random position
+                randomPosition[0] = rand.nextInt(10);
+                randomPosition[1] = rand.nextInt(10);
+
+                // Random orientation
+                float prob = rand.nextFloat();
+                if (prob < 0.25)
+                    randomOrientation = Direction.NORTH;
+                else if (prob < 0.5)
+                    randomOrientation = Direction.SOUTH;
+                else if (prob < 0.75)
+                    randomOrientation = Direction.EAST;
+                else
+                    randomOrientation = Direction.WEST;
+
+                if (this._ship_board.placeShip(ship, randomPosition, randomOrientation, false))
+                    break;
+            }
+        }
+    }
+
+    // Method that setups the player's board at the start of the game
     public void setupBoard() throws Exception {
         String menuInput;
         Ship currShip = new Ship();
@@ -87,7 +120,7 @@ public class Player {
                 orientation = this._helper.inputToOrientation(userInput.readLine());
 
                 // Place the ship on the board
-                this._ship_board.placeShip(currShip, position, orientation);
+                this._ship_board.placeShip(currShip, position, orientation, true);
             }
         }
     }
