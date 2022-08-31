@@ -3,22 +3,25 @@ public class Ship {
     private int _length;
     private int[] _position;
     private Direction _orientation;
-    private int _number;
+    private int _ship_number;
+    private int _hits;
 
     // Default constructor
     public Ship() {
         this.setLength(-1);
         this.setPosition(new int[] {-1, -1});
         this.setOrientation(Direction.EMPTY);
-        this.setNumber(-1);
+        this.setShipNumber(-1);
+        this.setHits(-1);
     }
 
     // Overloaded constructor
-    public Ship(int length, Direction orientation, int[] position, int number) {
+    public Ship(int length, Direction orientation, int[] position, int shipNumber) {
         this.setLength(length);
         this.setPosition(position);
         this.setOrientation(orientation);
-        this.setNumber(number);
+        this.setShipNumber(shipNumber);
+        this.setHits(0);
     }
 
     // Length mutator and accessor
@@ -45,11 +48,29 @@ public class Ship {
         this._orientation = orientation;
     }
 
-    // Number mutator and accessor
-    public int getNumber() {
-        return this._number;
+    // Ship number mutator and accessor
+    public int getShipNumber() {
+        return this._ship_number;
     }
-    public void setNumber(int number) {
-        this._number = number;
+    public void setShipNumber(int shipNumber) {
+        this._ship_number = shipNumber;
+    }
+
+    // Hits mutator and accessor
+    public int getHits() {
+        return this._hits;
+    }
+    public void setHits(int hits) {
+        this._hits = hits;
+    }
+
+    // Increment hits
+    public void incrementHits() {
+        this._hits++;
+    }
+
+    // Check if the ship is sunk
+    public boolean isSunk() {
+        return this._hits == this._length;
     }
 }
