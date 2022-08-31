@@ -7,19 +7,24 @@ import java.util.Random;
 
 public class Player {
     // Member variables
-    private boolean _running;
-    private boolean _victory;
+    public boolean _running;
+    public boolean _victory;
+    private BufferedReader _user_input;
     private Board _ship_board;
     private Board _shot_board;
     private List<Ship> _ships;
     private List<int[]> _shots;
     private Helper _helper;
+    private int _enemy_ship_counter;
 
     // Default constructor
     public Player() {
         // Instantiate the default game states
         this._running = true;
         this._victory = false;
+
+        // Instantiate the buffered reader
+        this._user_input = new BufferedReader(new InputStreamReader(System.in));
 
         // Instantiate empty boards
         this._ship_board = new Board(10);
@@ -42,10 +47,13 @@ public class Player {
 
         // Instantiate the helper object
         this._helper = new Helper();
+
+        // Instantiate the number of enemy ships
+        this._enemy_ship_counter = 4;
     }
 
     // Method that randomizes the ship's positions
-    public void randomizeBoard() {
+    private void randomizeBoard() {
         // Place each ship in the list on the board
         for (Ship ship : this._ships) {
             // Continue to randomize the ships position and orientation
@@ -84,9 +92,6 @@ public class Player {
         int[] position;
         Direction orientation;
 
-        // User input buffered reader
-        BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
-
         System.out.println("BOARD SETUP");
         while (true) {
             // Reset the boolean
@@ -95,7 +100,7 @@ public class Player {
             // Print options
             this._ship_board.printBoard();
             System.out.println("Please select an option:\nR - Ready Up\n1 - Move Ship 1\n2 - Move Ship 2\n3 - Move Ship 3\n4 - Move Ship 4");
-            menuInput = userInput.readLine();
+            menuInput = this._user_input.readLine();
 
             // Check menuInput for ready up
             if (menuInput.toLowerCase().equals("r")) {
@@ -115,9 +120,9 @@ public class Player {
             // If ship is valid, continue to position and orientation
             if (validShip) {
                 System.out.println("\nEnter the position:");
-                position = this._helper.inputToPosition(userInput.readLine());
+                position = this._helper.inputToPosition(this._user_input.readLine());
                 System.out.println("\nEnter the orientation:");
-                orientation = this._helper.inputToOrientation(userInput.readLine());
+                orientation = this._helper.inputToOrientation(this._user_input.readLine());
 
                 // Place the ship on the board
                 this._ship_board.placeShip(currShip, position, orientation, true);
@@ -125,20 +130,79 @@ public class Player {
         }
     }
 
-    /*
-    // Method that validates the player's input and sends the message to the server
-    public String inputShot() {
-        //
+    // Method that validates the player's shot position input and returns it
+    public int[] fireShot() throws Exception {
+        System.out.println("\nEnter the shot position:");
+        int[] shotPosition = this._helper.inputToPosition(this._user_input.readLine());
+        return shotPosition;
     }
 
-    // Method that fires a shot at the enemy player's board
-    public void fireShot(int[] position) {
-        //
+    // Method that takes the shot position and data to update the shot board
+    public void updateShotBoard(int[] shotPosition, String shotData) {
+        // Update the shot board's information
+        this._shot_board.placeShot(shotPosition, shotData);
+
+        // If a ship was sunk, subtract from the enemy ship counter
+        if (shotData.toLowerCase().equals("sunk")) {
+            this._enemy_ship_counter -= 1;
+        }
+
+        // If the ship enemy counter is 0 or less, the game is over and the player has won
+        if (this._enemy_ship_counter <= 0) {
+            this._running = false;
+            this._victory = true;
+        }
     }
 
-    // Method to adjust the game's state after each round
-    public boolean determineGameState() {
-        //
+    // Method that takes the shot position and determines the shot data
+    public String updateShipBoard(int[] shotPosition) {
+        // Define the shot data value
+        String shotData;
+        int shipNumber = this._ship_board.isHit(shotPosition);
+
+        // Check if the shot is a miss
+        if (shipNumber == -1)
+            shotData = "miss";
+        // Otherwise, the shot is a hit
+        else {
+            // Get the ship
+            Ship tmpShip = null;
+            for (Ship ship : this._ships) {
+                if (ship.getShipNumber() == shipNumber) {
+                    tmpShip = ship;
+                    break;
+                }
+            }
+
+            // Increment the hits on the ship
+            tmpShip.incrementHits();
+
+            // Determine if the hit also sunk the ship
+            if (tmpShip.isSunk()) {
+                // Set shotData to sunk
+                shotData = "sunk";
+
+                // Remove tmpShip from this._ships
+                this._ships.remove(tmpShip);
+
+                // Check if the game is over
+                if (this._ships.isEmpty()) {
+                    this._running = false;
+                    this._victory = false;
+                }
+            }
+            else {
+                // Set shotData to hit
+                shotData = "hit";
+            }
+        }
+
+        return shotData;
     }
-    */
+
+    // Method to print both boards
+    public void printBoards() {
+        this._ship_board.printBoard();
+        this._shot_board.printBoard();
+    }
 }
