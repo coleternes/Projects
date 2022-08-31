@@ -56,15 +56,17 @@ public class Server {
                         // Check if it's player1's turn
                         if (player1._is_my_turn) {
                             // Grab player1's shot position
-                            int row = player1._client_receiver.read();
-                            int col = player1._client_receiver.read();
+                            int row = Integer.parseInt(player1._client_receiver.readLine());
+                            int col = Integer.parseInt(player1._client_receiver.readLine());
+                            System.out.println("Server position = (" + row + ", " + col + ")");
 
                             // Send the shot position to player2
-                            player2._client_sender.writeInt(row);
-                            player2._client_sender.writeInt(col);
+                            player2._client_sender.writeBytes("" + row + '\n');
+                            player2._client_sender.writeBytes("" + col + '\n');
 
                             // Grab the shot data from player2
                             String shotData = player2._client_receiver.readLine();
+                            System.out.println("Server showData = " + shotData);
 
                             // Send the shot data to player1
                             player1._client_sender.writeBytes(shotData + '\n');
@@ -76,15 +78,17 @@ public class Server {
                         // Otherwise, it is player2's turn
                         else {
                             // Grab player2's shot position
-                            int row = player2._client_receiver.read();
-                            int col = player2._client_receiver.read();
+                            int row = Integer.parseInt(player2._client_receiver.readLine());
+                            int col = Integer.parseInt(player2._client_receiver.readLine());
+                            System.out.println("Server position = (" + row + ", " + col + ")");
 
                             // Send the shot position to player1
-                            player1._client_sender.writeInt(row);
-                            player1._client_sender.writeInt(col);
+                            player1._client_sender.writeBytes("" + row + '\n');
+                            player1._client_sender.writeBytes("" + col + '\n');
 
                             // Grab the shot data from player1
                             String shotData = player1._client_receiver.readLine();
+                            System.out.println("Server showData = " + shotData);
 
                             // Send the shot data to player2
                             player2._client_sender.writeBytes(shotData + '\n');

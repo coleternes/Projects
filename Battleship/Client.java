@@ -50,8 +50,8 @@ public class Client {
                 int[] shotPosition = p.fireShot();
 
                 // Send the position to the server
-                serverSender.writeInt(shotPosition[0]);
-                serverSender.writeInt(shotPosition[1]);
+                serverSender.writeBytes("" + shotPosition[0] + '\n');
+                serverSender.writeBytes("" + shotPosition[1] + '\n');
 
                 // When ready, receive the shot data
                 String shotData = serverReceiver.readLine();
@@ -65,8 +65,8 @@ public class Client {
                 System.out.println("\nWaiting for enemy's shot...");
 
                 // When ready, receive the enemy's shot
-                int row = serverReceiver.read();
-                int col = serverReceiver.read();
+                int row = Integer.parseInt(serverReceiver.readLine());
+                int col = Integer.parseInt(serverReceiver.readLine());
                 System.out.println("Received shotPosition: (" + row + ", " + col + ")");
                 int[] shotPosition = new int[] {row, col};
 
