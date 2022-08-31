@@ -26,6 +26,7 @@ public class Client {
         // https://stackoverflow.com/questions/21365046/inputstream-read-read-wrong-boolean-value
         boolean isMyTurn = serverReceiver.read() != 0;
         System.out.println("isMyTurn = " + isMyTurn);
+        String shotData;
 
         // Main game loop
         while (p._running) {
@@ -54,7 +55,7 @@ public class Client {
                 serverSender.writeBytes("" + shotPosition[1] + '\n');
 
                 // When ready, receive the shot data
-                String shotData = serverReceiver.readLine();
+                shotData = serverReceiver.readLine();
                 System.out.println("Received shotdata = " + shotData);
 
                 // Update the player's _shot_board
@@ -71,7 +72,7 @@ public class Client {
                 int[] shotPosition = new int[] {row, col};
 
                 // Determine the shot data based on the position
-                String shotData = p.updateShipBoard(shotPosition);
+                shotData = p.updateShipBoard(shotPosition);
 
                 // Send the shot data to the server
                 serverSender.writeBytes(shotData + '\n');
@@ -83,8 +84,9 @@ public class Client {
             // Print both boards to the screen
             p.printBoards();
 
-            // Inverse isMyTurn at the end of each round
-            isMyTurn = !isMyTurn;
+            // Inverse isMyTurn at the end of each round if the shot is a miss
+            if (shotData.toLowerCase().equals("miss"))
+                isMyTurn = !isMyTurn;
         }
 
         // Determine the victor

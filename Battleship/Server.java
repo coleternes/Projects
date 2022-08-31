@@ -71,9 +71,11 @@ public class Server {
                             // Send the shot data to player1
                             player1._client_sender.writeBytes(shotData + '\n');
 
-                            // Inverse the player's turn order
-                            player1._is_my_turn = false;
-                            player2._is_my_turn = true;
+                            if (shotData.toLowerCase().equals("miss")) {
+                                // Inverse the player's turn order
+                                player1._is_my_turn = false;
+                                player2._is_my_turn = true;
+                            }
                         }
                         // Otherwise, it is player2's turn
                         else {
@@ -93,15 +95,19 @@ public class Server {
                             // Send the shot data to player2
                             player2._client_sender.writeBytes(shotData + '\n');
 
-                            // Inverse the player's turn order
-                            player1._is_my_turn = true;
-                            player2._is_my_turn = false;
+                            if (shotData.toLowerCase().equals("miss")) {
+                                // Inverse the player's turn order
+                                player1._is_my_turn = true;
+                                player2._is_my_turn = false;
+                            }
                         }
 
                         // Update players game states
                         player1Running = player1._client_receiver.read() != 0;
                         player2Running = player2._client_receiver.read() != 0;
                     }
+
+                    System.out.println("Game ended!");
 
                     // At the end of the game, reset player1 and player2
                     player1 = null;
