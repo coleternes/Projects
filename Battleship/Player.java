@@ -197,6 +197,9 @@ public class Player {
             }
         }
 
+        // Update the ship board's information
+        this._ship_board.placeShot(shotPosition, shotData);
+
         return shotData;
     }
 
