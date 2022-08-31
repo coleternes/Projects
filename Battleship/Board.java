@@ -115,7 +115,7 @@ public class Board {
 
                 // Place the ship component at deltaPos
                 if (this._board[deltaPos[0]][deltaPos[1]] == '~') {
-                    this._board[deltaPos[0]][deltaPos[1]] = Character.forDigit(ship.getNumber(), 10);
+                    this._board[deltaPos[0]][deltaPos[1]] = Character.forDigit(ship.getShipNumber(), 10);
                     newPosStack.push(deltaPos);
                 }
                 // Otherwise, there is already a ship at deltaPos
@@ -148,7 +148,7 @@ public class Board {
             // Place back the old positions
             while (!oldPosStack.empty()) {
                 int[] tmpPos = oldPosStack.pop();
-                this._board[tmpPos[0]][tmpPos[1]] = Character.forDigit(ship.getNumber(), 10);
+                this._board[tmpPos[0]][tmpPos[1]] = Character.forDigit(ship.getShipNumber(), 10);
             }
 
             // Failed to place the ship
@@ -157,14 +157,12 @@ public class Board {
     }
 
     // Method to place a shot on the board
-    public boolean placeShot(int[] position) {
+    public boolean placeShot(int[] shotPosition, String shotData) {
         try {
-            // Missed shot
-            if (this._board[position[0]][position[1]] == '~')
-                this._board[position[0]][position[1]] = 'O';
-            // Hit shot
+            if (shotData.toLowerCase().equals("hit") || shotData.toLowerCase().equals("sunk"))
+                this._board[shotPosition[0]][shotPosition[1]] = 'X';
             else
-                this._board[position[0]][position[1]] = 'X';
+                this._board[shotPosition[0]][shotPosition[1]] = 'O';
 
             return true;
         }
@@ -173,5 +171,14 @@ public class Board {
 
             return false;
         }
+    }
+
+    // Method to check if a shot is a hit; returns the ship number that is hit
+    public int isHit(int[] shotPosition) {
+        // Return -1 if the shot is a miss
+        if (this._board[shotPosition[0]][shotPosition[1]] == '~')
+            return -1;
+
+        return this._board[shotPosition[0]][shotPosition[1]] - '0';
     }
 }
