@@ -132,8 +132,16 @@ public class Player {
 
     // Method that validates the player's shot position input and returns it
     public int[] fireShot() throws Exception {
-        System.out.println("\nEnter the shot position:");
-        int[] shotPosition = this._helper.inputToPosition(this._user_input.readLine());
+        int[] shotPosition = new int[] {-1, -1};
+        int i = 0;
+        while (!this._shot_board.validShot(shotPosition)) {
+            if (i > 0)
+                System.out.println("\n[ERROR] Invalid position\n\n");
+            System.out.println("\nEnter the shot position:");
+            shotPosition = this._helper.inputToPosition(this._user_input.readLine());
+            ++i;
+        }
+
         return shotPosition;
     }
 

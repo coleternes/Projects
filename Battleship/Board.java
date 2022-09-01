@@ -129,11 +129,11 @@ public class Board {
         // Catch placement errors if they should occur
         catch (Exception e) {
             if (e instanceof ArrayIndexOutOfBoundsException && feedback)
-                System.out.println("\nShip out of bounds; reverting position\n\n");
+                System.out.println("\n[ERROR] Ship out of bounds, reverting position\n\n");
             else if (e instanceof CollisionException && feedback)
-                System.out.println("\nShip collides with other ship, reverting position\n\n");
+                System.out.println("\n[ERROR] Ship collides with other ship, reverting position\n\n");
             else if (feedback)
-                System.out.println("\nUnkown error, reverting position\n\n");
+                System.out.println("\n[ERROR] Unkown error, reverting position\n\n");
 
             // Revert the position and orientation
             ship.setPosition(oldPosition);
@@ -180,5 +180,16 @@ public class Board {
             return -1;
 
         return this._board[shotPosition[0]][shotPosition[1]] - '0';
+    }
+
+    // Method to check if a shot is at a valid position
+    public boolean validShot(int[] shotPosition) {
+        try {
+            char test = this._board[shotPosition[0]][shotPosition[1]];
+            return true;
+        }
+        catch (Exception e) {
+            return false;
+        }
     }
 }
