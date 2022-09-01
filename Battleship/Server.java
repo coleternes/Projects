@@ -26,15 +26,15 @@ public class Server {
 
                 // Store the players
                 if (player1 == null) {
-                    System.out.println("Instantiated player1");
                     // Instantiate player1
                     player1 = new ClientHandler(clientSocket, true);
+                    System.out.println("Player1 joined");
                 }
                 else {
                     if (player2 == null) {
-                        System.out.println("Instantiated player2");
                         // Instantiate player2
                         player2 = new ClientHandler(clientSocket, false);
+                        System.out.println("Player2 joined");
 
                         // Send the turn orders to initiate the game
                         player1.sendTurnOrder();
@@ -43,7 +43,6 @@ public class Server {
                     }
                     else {
                         // TODO: Send rejection message if game is running
-                        System.out.println("The else...");
                     }
                 }
 
@@ -109,17 +108,11 @@ public class Server {
                         player2Running = player2._client_receiver.read() != 0;
                     }
 
-                    System.out.println("Game ended!");
-
-                    System.out.println("player1 = " + player1);
-                    System.out.println("player2 = " + player2);
-
                     // At the end of the game, reset the players
                     player1 = null;
                     player2 = null;
-
-                    System.out.println("player1 = " + player1);
-                    System.out.println("player2 = " + player2);
+                    gameStarted = false;
+                    System.out.println("Game ended!");
                 }
             }
         }
