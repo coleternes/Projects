@@ -67,10 +67,12 @@ public class Server {
 
                             // Grab the shot data from player2
                             String shotData = player2._client_receiver.readLine();
+                            int shipNumber = Integer.parseInt(player2._client_receiver.readLine());
                             System.out.println("Player 1's Shot Data = " + shotData);
 
                             // Send the shot data to player1
                             player1._client_sender.writeBytes(shotData + '\n');
+                            player1._client_sender.writeBytes("" + shipNumber + '\n');
 
                             if (shotData.toLowerCase().equals("miss")) {
                                 // Inverse the player's turn order
@@ -91,10 +93,12 @@ public class Server {
 
                             // Grab the shot data from player1
                             String shotData = player1._client_receiver.readLine();
+                            int shipNumber = Integer.parseInt(player1._client_receiver.readLine());
                             System.out.println("Player 2's Shot Data = " + shotData);
 
                             // Send the shot data to player2
                             player2._client_sender.writeBytes(shotData + '\n');
+                            player2._client_sender.writeBytes("" + shipNumber + '\n');
 
                             if (shotData.toLowerCase().equals("miss")) {
                                 // Inverse the player's turn order

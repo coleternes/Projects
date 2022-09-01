@@ -40,7 +40,11 @@ public class Client {
 
                 // When ready, receive the shot data
                 shotData = serverReceiver.readLine();
-                System.out.println(shotData.toUpperCase() + "\n");
+                int shipNumber = Integer.parseInt(serverReceiver.readLine());
+                System.out.print("\n");
+                if (shotData.toLowerCase().equals("sunk"))
+                    System.out.print("SHIP " + shipNumber + " HAS ");
+                System.out.print(shotData.toUpperCase() + "\n");
 
                 // Update the player's _shot_board
                 p.updateShotBoard(shotPosition, shotData);
@@ -56,11 +60,16 @@ public class Client {
                 int[] shotPosition = new int[] {row, col};
 
                 // Determine the shot data based on the position
+                int shipNumber = p.getShipAtPosition(shotPosition);
                 shotData = p.updateShipBoard(shotPosition);
-                System.out.println(shotData.toUpperCase() + "\n");
+                System.out.print("\n");
+                if (shotData.toLowerCase().equals("sunk"))
+                    System.out.print("SHIP " + shipNumber + " HAS ");
+                System.out.print(shotData.toUpperCase() + "\n");
 
-                // Send the shot data to the server
+                // Send the shot data and ship number to the server
                 serverSender.writeBytes(shotData + '\n');
+                serverSender.writeBytes("" + shipNumber + '\n');
             }
 
             // Send the server the game status

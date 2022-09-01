@@ -213,4 +213,9 @@ public class Player {
     public String positionToInput(int row, int col) {
         return this._helper.positionToInput(row, col);
     }
+
+    // Method to grab ship number
+    public int getShipAtPosition(int[] shotPosition) {
+        return this._ship_board.isHit(shotPosition);
+    }
 }
