@@ -14,7 +14,7 @@ public class Client {
         try {
             clientSocket = new Socket("localhost", 6789);
         } catch (Exception e) {
-            System.out.println("Failed to open socket connection");
+            System.out.println("[ERROR] Failed to open socket connection");
             System.exit(0);
         }
 
@@ -23,7 +23,6 @@ public class Client {
         DataOutputStream serverSender = new DataOutputStream(clientSocket.getOutputStream());
 
         // Check if it's the client's turn to shoot
-        // https://stackoverflow.com/questions/21365046/inputstream-read-read-wrong-boolean-value
         boolean isMyTurn = serverReceiver.read() != 0;
         String shotData;
 
