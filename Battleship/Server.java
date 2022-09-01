@@ -11,6 +11,7 @@ public class Server {
         ServerSocket serverSocket = null;
         ClientHandler player1 = null;
         ClientHandler player2 = null;
+        ClientHandler extra = null;
         boolean gameStarted = false;
 
         try {
@@ -25,15 +26,15 @@ public class Server {
 
                 // Store the players
                 if (player1 == null) {
+                    System.out.println("Instantiated player1");
                     // Instantiate player1
                     player1 = new ClientHandler(clientSocket, true);
-                    new Thread(player1).start();
                 }
                 else {
                     if (player2 == null) {
+                        System.out.println("Instantiated player2");
                         // Instantiate player2
                         player2 = new ClientHandler(clientSocket, false);
-                        new Thread(player2).start();
 
                         // Send the turn orders to initiate the game
                         player1.sendTurnOrder();
@@ -42,6 +43,7 @@ public class Server {
                     }
                     else {
                         // TODO: Send rejection message if game is running
+                        System.out.println("The else...");
                     }
                 }
 
@@ -58,7 +60,7 @@ public class Server {
                             // Grab player1's shot position
                             int row = Integer.parseInt(player1._client_receiver.readLine());
                             int col = Integer.parseInt(player1._client_receiver.readLine());
-                            System.out.println("Server position = (" + row + ", " + col + ")");
+                            System.out.println("Player 1's Shot Position = (" + row + ", " + col + ")");
 
                             // Send the shot position to player2
                             player2._client_sender.writeBytes("" + row + '\n');
@@ -66,7 +68,7 @@ public class Server {
 
                             // Grab the shot data from player2
                             String shotData = player2._client_receiver.readLine();
-                            System.out.println("Server showData = " + shotData);
+                            System.out.println("Player 1's Shot Data = " + shotData);
 
                             // Send the shot data to player1
                             player1._client_sender.writeBytes(shotData + '\n');
@@ -82,7 +84,7 @@ public class Server {
                             // Grab player2's shot position
                             int row = Integer.parseInt(player2._client_receiver.readLine());
                             int col = Integer.parseInt(player2._client_receiver.readLine());
-                            System.out.println("Server position = (" + row + ", " + col + ")");
+                            System.out.println("Player 2's Shot Position = (" + row + ", " + col + ")");
 
                             // Send the shot position to player1
                             player1._client_sender.writeBytes("" + row + '\n');
@@ -90,7 +92,7 @@ public class Server {
 
                             // Grab the shot data from player1
                             String shotData = player1._client_receiver.readLine();
-                            System.out.println("Server showData = " + shotData);
+                            System.out.println("Player 2's Shot Data = " + shotData);
 
                             // Send the shot data to player2
                             player2._client_sender.writeBytes(shotData + '\n');
@@ -109,9 +111,15 @@ public class Server {
 
                     System.out.println("Game ended!");
 
-                    // At the end of the game, reset player1 and player2
+                    System.out.println("player1 = " + player1);
+                    System.out.println("player2 = " + player2);
+
+                    // At the end of the game, reset the players
                     player1 = null;
                     player2 = null;
+
+                    System.out.println("player1 = " + player1);
+                    System.out.println("player2 = " + player2);
                 }
             }
         }
@@ -130,7 +138,7 @@ public class Server {
         }
     }
 
-    private static class ClientHandler implements Runnable {
+    private static class ClientHandler {
         // Member variables
         private final Socket _client_socket;
         public final BufferedReader _client_receiver;
@@ -149,7 +157,5 @@ public class Server {
         public void sendTurnOrder() throws Exception {
             this._client_sender.writeBoolean(this._is_my_turn);
         }
-
-        public void run() { }
     }
 }
