@@ -77,4 +77,46 @@ public class Helper {
             return Direction.EMPTY;
         }
     }
+
+    public String positionToInput(int row, int col) {
+        String input = "";
+
+        switch (row) {
+            case 0:
+                input += "A";
+                break;
+            case 1:
+                input += "B";
+                break;
+            case 2:
+                input += "C";
+                break;
+            case 3:
+                input += "D";
+                break;
+            case 4:
+                input += "E";
+                break;
+            case 5:
+                input += "F";
+                break;
+            case 6:
+                input += "G";
+                break;
+            case 7:
+                input += "H";
+                break;
+            case 8:
+                input += "I";
+                break;
+            case 9:
+                input += "J";
+                break;
+        }
+
+        col += 1;
+        input += col;
+
+        return input;
+    }
 }

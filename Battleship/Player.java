@@ -208,4 +208,9 @@ public class Player {
         this._ship_board.printBoard();
         this._shot_board.printBoard();
     }
+
+    // Method to convert position to board
+    public String positionToInput(int row, int col) {
+        return this._helper.positionToInput(row, col);
+    }
 }

@@ -25,26 +25,10 @@ public class Client {
         // Check if it's the client's turn to shoot
         // https://stackoverflow.com/questions/21365046/inputstream-read-read-wrong-boolean-value
         boolean isMyTurn = serverReceiver.read() != 0;
-        System.out.println("isMyTurn = " + isMyTurn);
         String shotData;
 
         // Main game loop
         while (p._running) {
-            // TODO:
-            // 1. Check if it's the client's turn to shoot
-            // 2. Player 1 will be first to shoot...
-            //    a. Player 1 inputs position
-            //    b. Player 1 sends position to server
-            //    c. Server sends position to Player 2
-            //    d. Player 2 updates shot data via _ship_board
-            //    e. Player 2 calculates _running & _victory
-            //    f. Player 2 sends shot data to server
-            //    g. Server sends shot data to Player 1
-            //    h. Player 1 updates _ship_board
-            //    i. Player 1 calculates _running & _victory
-            // 3. Print the boards
-            // 4. Inverse the isMyTurn value
-
             // If it's my turn, shoot at a position and send it to the server
             if (isMyTurn) {
                 // Determine the player's shot position
@@ -56,7 +40,7 @@ public class Client {
 
                 // When ready, receive the shot data
                 shotData = serverReceiver.readLine();
-                System.out.println("Received shotdata = " + shotData);
+                System.out.println(shotData.toUpperCase() + "\n");
 
                 // Update the player's _shot_board
                 p.updateShotBoard(shotPosition, shotData);
@@ -68,11 +52,12 @@ public class Client {
                 // When ready, receive the enemy's shot
                 int row = Integer.parseInt(serverReceiver.readLine());
                 int col = Integer.parseInt(serverReceiver.readLine());
-                System.out.println("Received shotPosition: (" + row + ", " + col + ")");
+                System.out.println("\nEnemy shot at " + p.positionToInput(row, col));
                 int[] shotPosition = new int[] {row, col};
 
                 // Determine the shot data based on the position
                 shotData = p.updateShipBoard(shotPosition);
+                System.out.println(shotData.toUpperCase() + "\n");
 
                 // Send the shot data to the server
                 serverSender.writeBytes(shotData + '\n');
@@ -91,9 +76,9 @@ public class Client {
 
         // Determine the victor
         if (p._victory)
-            System.out.println("You win!");
+            System.out.println("\n\nYou win!\n");
         else
-            System.out.println("You lost!");
+            System.out.println("\n\nYou lost!\n");
 
         // Close the socket after game completion
         clientSocket.close();
